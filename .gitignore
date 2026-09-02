@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+.env
+test.docx
+test.xlsx
+test.pptx
