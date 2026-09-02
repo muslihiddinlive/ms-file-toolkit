@@ -8,6 +8,7 @@ shu yerdagi dispatch() funksiyasiga uzatasiz, u kerakli faylni tahlil qilib bera
 from .docx_tool import read_docx_text, read_docx_tables, get_docx_metadata
 from .xlsx_tool import get_xlsx_sheet_names, read_xlsx_data, get_xlsx_summary
 from .pptx_tool import read_pptx_text, get_pptx_slide_count, extract_pptx_notes
+from .legacy_tool import read_legacy_file
 
 REGISTRY = {
     "read_docx_text": read_docx_text,
@@ -19,6 +20,7 @@ REGISTRY = {
     "read_pptx_text": read_pptx_text,
     "get_pptx_slide_count": get_pptx_slide_count,
     "extract_pptx_notes": extract_pptx_notes,
+    "read_legacy_file": read_legacy_file,
 }
 
 

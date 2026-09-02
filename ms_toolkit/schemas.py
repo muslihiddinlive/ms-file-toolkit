@@ -116,4 +116,22 @@ TOOLS = [
             "required": ["file_path"],
         },
     },
+    # ---------- Eski formatlar (.doc / .xls / .ppt) ----------
+    {
+        "name": "read_legacy_file",
+        "description": (
+            "Eski Microsoft formatidagi (.doc, .xls, .ppt) faylni avtomatik "
+            "aniqlab, yangi formatga o'girib, matn/ma'lumotlarini o'qiydi."
+        ),
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "file_path": {
+                    "type": "string",
+                    "description": ".doc, .xls yoki .ppt fayl yo'li",
+                }
+            },
+            "required": ["file_path"],
+        },
+    },
 ]

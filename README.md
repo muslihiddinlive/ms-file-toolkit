@@ -15,6 +15,10 @@ pip install -r requirements.txt
 | `.docx` | matn o'qish, jadvallarni o'qish, metama'lumot |
 | `.xlsx` | varaq nomlari, ma'lumotlarni o'qish, o'lcham xulosasi |
 | `.pptx` | slayd matnlari, slaydlar soni, speaker notes |
+| `.doc` / `.xls` / `.ppt` (eski) | `read_legacy_file` — avtomatik yangi formatga o'girib o'qiydi |
+
+> **Eslatma:** eski formatlar (`.doc`/`.xls`/`.ppt`) uchun tizimda **LibreOffice** (`soffice`) o'rnatilgan bo'lishi shart — konvertatsiya shu orqali amalga oshiriladi.
+> Ubuntu/Debian: `apt-get install libreoffice`
 
 ## Tez boshlash (function calling bilan)
 
@@ -66,6 +70,6 @@ example.py          # Claude API bilan to'liq ishlaydigan misol
 
 ## Rejalashtirilgan (keyingi bosqichlar)
 
-- [ ] `.doc` / `.xls` / `.ppt` (eski formatlar) qo'llab-quvvatlash
+- [x] `.doc` / `.xls` / `.ppt` (eski formatlar) qo'llab-quvvatlash
 - [ ] Fayl yozish/generatsiya funksiyalari (hozircha faqat o'qish)
 - [ ] PyPI'ga paket sifatida chiqarish
