@@ -1,4 +1,12 @@
 python-docx>=1.1.0
 openpyxl>=3.1.0
 python-pptx>=0.6.23
+
+# Faqat rasm qo'shish funksiyalari (add_docx_image, add_pptx_image) uchun kerak
+Pillow>=10.0.0
+
+# Faqat example.py (Claude API demo) uchun kerak — asosiy toolkit uchun shart emas
 anthropic>=0.40.0
+
+# Faqat testlarni ishga tushirish uchun kerak (pytest tests/)
+pytest>=8.0.0

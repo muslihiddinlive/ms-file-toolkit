@@ -1,9 +1,13 @@
 """
 Misol: Claude API'ga ms_toolkit'ni 'tools' sifatida ulash.
 
-Ishga tushirish:
+O'rnatish:
+    pip install -r requirements.txt
     export ANTHROPIC_API_KEY=...
-    python example.py "Bu hujjatda nima yozilgan? /path/to/file.docx"
+
+Ishga tushirish:
+    python example.py "test.docx faylida nima yozilgan?"
+    python example.py "/tmp/hisobot.docx nomli hujjat yarat, sarlavhasi 'Hisobot' bo'lsin"
 """
 
 import sys
@@ -13,7 +17,15 @@ import anthropic
 
 from ms_toolkit import TOOLS, dispatch
 
+MODEL = "claude-sonnet-5"
+
 client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
+
+SYSTEM_PROMPT = (
+    "Siz Microsoft fayllar (Word, Excel, PowerPoint) bilan ishlaydigan yordamchisiz. "
+    "Fayllarni o'qish yoki yaratish/tahrirlash kerak bo'lsa, mos tool'ni chaqiring. "
+    "Fayl yo'llarini aniq va to'liq (absolyut) ko'rsating."
+)
 
 
 def run(user_message: str):
@@ -21,8 +33,9 @@ def run(user_message: str):
 
     while True:
         response = client.messages.create(
-            model="claude-sonnet-4-5",
+            model=MODEL,
             max_tokens=2000,
+            system=SYSTEM_PROMPT,
             tools=TOOLS,
             messages=messages,
         )
