@@ -108,3 +108,65 @@ def set_pptx_background_color(file_path: str, slide_index: int, hex_color: str) 
 
     prs.save(file_path)
     return {"file_path": file_path, "status": "background_set", "slide_index": slide_index}
+
+
+def add_pptx_chart(
+    file_path: str,
+    chart_type: str,
+    categories: list,
+    series: dict,
+    slide_index: int = None,
+    title: str = None,
+    left_inches: float = 1.0,
+    top_inches: float = 1.5,
+    width_inches: float = 8.0,
+    height_inches: float = 4.5,
+) -> dict:
+    """Taqdimotga diagramma (bar/line/pie) qo'shadi.
+
+    categories: X o'qi label'lari, masalan ["Yan", "Fev", "Mar"].
+    series: {"Seriya nomi": [qiymatlar ro'yxati], ...} — bir yoki bir nechta seriya.
+    slide_index berilmasa, oxirgi slaydga qo'shiladi.
+    """
+    from pptx.chart.data import CategoryChartData
+    from pptx.enum.chart import XL_CHART_TYPE
+
+    type_map = {
+        "bar": XL_CHART_TYPE.COLUMN_CLUSTERED,
+        "line": XL_CHART_TYPE.LINE,
+        "pie": XL_CHART_TYPE.PIE,
+    }
+    xl_type = type_map.get(chart_type)
+    if xl_type is None:
+        return {"error": f"Noto'g'ri chart_type: {chart_type} (ruxsat etilgan: bar, line, pie)"}
+
+    if not os.path.exists(file_path):
+        return {"error": f"Taqdimot topilmadi: {file_path}"}
+
+    prs = Presentation(file_path)
+    if not prs.slides:
+        return {"error": "Taqdimotda hech qanday slayd yo'q"}
+
+    idx = slide_index if slide_index is not None else len(prs.slides) - 1
+    if not 0 <= idx < len(prs.slides):
+        return {"error": f"Noto'g'ri slide_index: {idx} (jami slaydlar: {len(prs.slides)})"}
+
+    chart_data = CategoryChartData()
+    chart_data.categories = categories
+    for series_name, values in series.items():
+        chart_data.add_series(series_name, values)
+
+    slide = prs.slides[idx]
+    graphic_frame = slide.shapes.add_chart(
+        xl_type,
+        Inches(left_inches), Inches(top_inches),
+        Inches(width_inches), Inches(height_inches),
+        chart_data,
+    )
+
+    if title:
+        graphic_frame.chart.has_title = True
+        graphic_frame.chart.chart_title.text_frame.text = title
+
+    prs.save(file_path)
+    return {"file_path": file_path, "status": "chart_added", "chart_type": chart_type, "slide_index": idx}

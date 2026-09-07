@@ -17,12 +17,14 @@ from .docx_writer import (
 from .xlsx_tool import get_xlsx_sheet_names, read_xlsx_data, get_xlsx_summary
 from .xlsx_writer import (
     create_xlsx, add_xlsx_sheet, append_xlsx_rows,
-    set_xlsx_formula, format_xlsx_cells, freeze_xlsx_panes,
+    set_xlsx_formula, format_xlsx_cells, freeze_xlsx_panes, add_xlsx_chart,
 )
 from .pptx_tool import read_pptx_text, get_pptx_slide_count, extract_pptx_notes
 from .pptx_writer import (
-    create_pptx, add_pptx_slide, add_pptx_image, set_pptx_background_color,
+    create_pptx, add_pptx_slide, add_pptx_image, set_pptx_background_color, add_pptx_chart,
 )
+from .pdf_tool import read_pdf_text, read_pdf_tables, get_pdf_metadata
+from .pdf_writer import create_pdf, merge_pdfs, split_pdf
 from .legacy_tool import read_legacy_file
 from .auto_tool import read_any_file, get_file_info
 from .security import resolve_safe_path, UnsafePathError
@@ -50,6 +52,7 @@ REGISTRY = {
     "set_xlsx_formula": set_xlsx_formula,
     "format_xlsx_cells": format_xlsx_cells,
     "freeze_xlsx_panes": freeze_xlsx_panes,
+    "add_xlsx_chart": add_xlsx_chart,
     # PPTX - o'qish
     "read_pptx_text": read_pptx_text,
     "get_pptx_slide_count": get_pptx_slide_count,
@@ -59,6 +62,15 @@ REGISTRY = {
     "add_pptx_slide": add_pptx_slide,
     "add_pptx_image": add_pptx_image,
     "set_pptx_background_color": set_pptx_background_color,
+    "add_pptx_chart": add_pptx_chart,
+    # PDF - o'qish
+    "read_pdf_text": read_pdf_text,
+    "read_pdf_tables": read_pdf_tables,
+    "get_pdf_metadata": get_pdf_metadata,
+    # PDF - yozish
+    "create_pdf": create_pdf,
+    "merge_pdfs": merge_pdfs,
+    "split_pdf": split_pdf,
     # Eski formatlar
     "read_legacy_file": read_legacy_file,
     # Auto-detect
@@ -67,8 +79,10 @@ REGISTRY = {
 }
 
 # file_path/image_path qabul qiladigan tool'lar uchun xavfsizlik tekshiruvi
-# qo'llaniladigan parametr nomlari
-_PATH_PARAMS = ("file_path", "image_path", "save_as")
+# qo'llaniladigan parametr nomlari (scalar yo'llar)
+_PATH_PARAMS = ("file_path", "image_path", "save_as", "output_path", "output_dir")
+# ro'yxat (list) ko'rinishidagi fayl yo'llari (masalan merge_pdfs)
+_PATH_LIST_PARAMS = ("file_paths",)
 
 
 def dispatch(tool_name: str, tool_input: dict, base_dir: str = None) -> dict:
@@ -91,6 +105,9 @@ def dispatch(tool_name: str, tool_input: dict, base_dir: str = None) -> dict:
         for param in _PATH_PARAMS:
             if param in safe_input and safe_input[param]:
                 safe_input[param] = resolve_safe_path(safe_input[param], base_dir=base_dir)
+        for param in _PATH_LIST_PARAMS:
+            if param in safe_input and safe_input[param]:
+                safe_input[param] = [resolve_safe_path(p, base_dir=base_dir) for p in safe_input[param]]
     except UnsafePathError as e:
         return {"error": f"Xavfsizlik xatosi: {e}"}
 

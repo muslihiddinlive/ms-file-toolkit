@@ -1,5 +1,6 @@
 """
-To'liq pytest test to'plami — barcha 28 ta tool, xavfsizlik va auto-detect uchun.
+To'liq pytest test to'plami — barcha 36 ta tool, xavfsizlik, auto-detect,
+PDF, chart va CLI uchun.
 
 Ishga tushirish:
     pip install pytest Pillow
@@ -7,6 +8,7 @@ Ishga tushirish:
 """
 
 import os
+import json
 import pytest
 from ms_toolkit import dispatch, TOOLS, REGISTRY
 
@@ -30,7 +32,7 @@ def test_all_tools_registered():
     tool_names = {t["name"] for t in TOOLS}
     registry_names = set(REGISTRY.keys())
     assert tool_names == registry_names, "TOOLS va REGISTRY mos kelmayapti"
-    assert len(TOOLS) >= 28
+    assert len(TOOLS) >= 36
 
 
 def test_unknown_tool_returns_error():
@@ -190,3 +192,105 @@ def test_read_any_file_unknown_extension(tmp_dir):
 def test_read_any_file_missing():
     result = dispatch("read_any_file", {"file_path": "/tmp/does_not_exist_xyz.docx"})
     assert "error" in result
+
+
+# ---------- PDF ----------
+
+def test_pdf_create_read_metadata(tmp_dir):
+    path = os.path.join(tmp_dir, "doc.pdf")
+    r = dispatch("create_pdf", {"file_path": path, "title": "Sarlavha", "paragraphs": ["Birinchi."], "overwrite": True})
+    assert r["status"] == "created"
+
+    text = dispatch("read_pdf_text", {"file_path": path})
+    assert "Birinchi." in text["text"]
+
+    meta = dispatch("get_pdf_metadata", {"file_path": path})
+    assert meta["page_count"] == 1
+    assert meta["encrypted"] is False
+
+    tables = dispatch("read_pdf_tables", {"file_path": path})
+    assert tables["table_count"] == 0
+
+
+def test_pdf_merge_and_split(tmp_dir):
+    p1 = os.path.join(tmp_dir, "a.pdf")
+    p2 = os.path.join(tmp_dir, "b.pdf")
+    dispatch("create_pdf", {"file_path": p1, "title": "A", "overwrite": True})
+    dispatch("create_pdf", {"file_path": p2, "title": "B", "overwrite": True})
+
+    merged = os.path.join(tmp_dir, "merged.pdf")
+    r = dispatch("merge_pdfs", {"file_paths": [p1, p2], "output_path": merged, "overwrite": True})
+    assert r["status"] == "merged"
+
+    meta = dispatch("get_pdf_metadata", {"file_path": merged})
+    assert meta["page_count"] == 2
+
+    out_dir = os.path.join(tmp_dir, "split")
+    r2 = dispatch("split_pdf", {"file_path": merged, "output_dir": out_dir})
+    assert len(r2["output_files"]) == 2
+
+
+def test_pdf_merge_blocks_path_traversal(tmp_dir):
+    p1 = os.path.join(tmp_dir, "a.pdf")
+    dispatch("create_pdf", {"file_path": p1, "overwrite": True})
+    result = dispatch("merge_pdfs", {"file_paths": [p1, "/etc/passwd"], "output_path": os.path.join(tmp_dir, "out.pdf")})
+    assert "error" in result
+
+
+# ---------- Chart'lar ----------
+
+def test_xlsx_chart(tmp_dir):
+    path = os.path.join(tmp_dir, "chart.xlsx")
+    dispatch("create_xlsx", {"file_path": path, "headers": ["Oy", "Savdo"], "rows": [["Yan", 100], ["Fev", 150]], "overwrite": True})
+
+    r = dispatch("add_xlsx_chart", {
+        "file_path": path, "chart_type": "bar",
+        "data_range": "B1:B3", "categories_range": "A2:A3", "title": "Test",
+    })
+    assert r["status"] == "chart_added"
+
+    r_bad = dispatch("add_xlsx_chart", {"file_path": path, "chart_type": "unknown", "data_range": "B1:B3"})
+    assert "error" in r_bad
+
+
+def test_pptx_chart(tmp_dir):
+    path = os.path.join(tmp_dir, "chart.pptx")
+    dispatch("create_pptx", {"file_path": path, "title": "T", "overwrite": True})
+
+    r = dispatch("add_pptx_chart", {
+        "file_path": path, "chart_type": "pie",
+        "categories": ["A", "B"], "series": {"S1": [10, 20]}, "title": "Test",
+    })
+    assert r["status"] == "chart_added"
+
+    r_bad = dispatch("add_pptx_chart", {"file_path": path, "chart_type": "unknown", "categories": [], "series": {}})
+    assert "error" in r_bad
+
+
+# ---------- CLI ----------
+
+def test_cli_run_success(tmp_dir):
+    import subprocess
+    path = os.path.join(tmp_dir, "cli.docx")
+    result = subprocess.run(
+        ["python3", "-m", "ms_toolkit.cli", "run", "create_docx", json.dumps({"file_path": path, "overwrite": True})],
+        capture_output=True, text=True,
+    )
+    assert result.returncode == 0
+    assert "created" in result.stdout
+
+
+def test_cli_run_unknown_tool():
+    import subprocess
+    result = subprocess.run(
+        ["python3", "-m", "ms_toolkit.cli", "run", "no_such_tool", "{}"],
+        capture_output=True, text=True,
+    )
+    assert result.returncode == 1
+
+
+def test_cli_list():
+    import subprocess
+    result = subprocess.run(["python3", "-m", "ms_toolkit.cli", "list"], capture_output=True, text=True)
+    assert result.returncode == 0
+    assert "create_docx" in result.stdout

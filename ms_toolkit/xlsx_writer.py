@@ -138,3 +138,49 @@ def freeze_xlsx_panes(file_path: str, cell: str = "A2", sheet_name: str = None) 
     ws.freeze_panes = cell
     wb.save(file_path)
     return {"file_path": file_path, "status": "panes_frozen", "cell": cell, "sheet_name": ws.title}
+
+
+def add_xlsx_chart(
+    file_path: str,
+    chart_type: str,
+    data_range: str,
+    categories_range: str = None,
+    title: str = None,
+    anchor_cell: str = "E2",
+    sheet_name: str = None,
+) -> dict:
+    """Excel varag'iga diagramma (bar/line/pie) qo'shadi.
+
+    chart_type: 'bar', 'line' yoki 'pie'.
+    data_range: qiymatlar diapazoni, masalan 'B1:B5' (sarlavha bilan birga bo'lsa ham OK).
+    categories_range: X o'qi/label'lar diapazoni, masalan 'A2:A5' (ixtiyoriy).
+    anchor_cell: diagramma joylashadigan katak, masalan 'E2'.
+    """
+    from openpyxl.chart import BarChart, LineChart, PieChart, Reference
+
+    if not os.path.exists(file_path):
+        return {"error": f"Fayl topilmadi: {file_path}"}
+
+    chart_classes = {"bar": BarChart, "line": LineChart, "pie": PieChart}
+    chart_class = chart_classes.get(chart_type)
+    if chart_class is None:
+        return {"error": f"Noto'g'ri chart_type: {chart_type} (ruxsat etilgan: bar, line, pie)"}
+
+    wb = load_workbook(file_path)
+    ws = wb[sheet_name] if sheet_name else wb.active
+
+    chart = chart_class()
+    if title:
+        chart.title = title
+
+    data_ref = Reference(ws, range_string=f"{ws.title}!{data_range}")
+    chart.add_data(data_ref, titles_from_data=True)
+
+    if categories_range:
+        cats_ref = Reference(ws, range_string=f"{ws.title}!{categories_range}")
+        chart.set_categories(cats_ref)
+
+    ws.add_chart(chart, anchor_cell)
+    wb.save(file_path)
+
+    return {"file_path": file_path, "status": "chart_added", "chart_type": chart_type, "sheet_name": ws.title}

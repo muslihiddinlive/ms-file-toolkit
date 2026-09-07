@@ -6,6 +6,7 @@ _EXT_MAP = {
     ".docx": "docx",
     ".xlsx": "xlsx",
     ".pptx": "pptx",
+    ".pdf": "pdf",
     ".doc": "legacy",
     ".xls": "legacy",
     ".ppt": "legacy",
@@ -34,6 +35,7 @@ def read_any_file(file_path: str) -> dict:
     from .docx_tool import read_docx_text
     from .xlsx_tool import read_xlsx_data
     from .pptx_tool import read_pptx_text
+    from .pdf_tool import read_pdf_text
     from .legacy_tool import read_legacy_file
 
     if not os.path.exists(file_path):
@@ -48,6 +50,8 @@ def read_any_file(file_path: str) -> dict:
         result = read_xlsx_data(file_path)
     elif kind == "pptx":
         result = read_pptx_text(file_path)
+    elif kind == "pdf":
+        result = read_pdf_text(file_path)
     elif kind == "legacy":
         result = read_legacy_file(file_path)
     else:

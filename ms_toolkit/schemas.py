@@ -261,6 +261,23 @@ TOOLS = [
             "required": ["file_path"],
         },
     },
+    {
+        "name": "add_xlsx_chart",
+        "description": "Excel (.xlsx) varag'iga diagramma (bar/line/pie) qo'shadi, mavjud ma'lumotlar asosida.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "file_path": {"type": "string", "description": ".xlsx fayl yo'li"},
+                "chart_type": {"type": "string", "enum": ["bar", "line", "pie"], "description": "Diagramma turi"},
+                "data_range": {"type": "string", "description": "Qiymatlar diapazoni, masalan 'B1:B5'"},
+                "categories_range": {"type": "string", "description": "X o'qi/label'lar diapazoni, masalan 'A2:A5' (ixtiyoriy)"},
+                "title": {"type": "string", "description": "Diagramma sarlavhasi (ixtiyoriy)"},
+                "anchor_cell": {"type": "string", "description": "Diagramma joylashadigan katak (default: 'E2')"},
+                "sheet_name": {"type": "string", "description": "Varaq nomi (ixtiyoriy)"},
+            },
+            "required": ["file_path", "chart_type", "data_range"],
+        },
+    },
     # ---------- PPTX ----------
     {
         "name": "read_pptx_text",
@@ -354,6 +371,96 @@ TOOLS = [
                 "hex_color": {"type": "string", "description": "6 xonali hex rang kodi, masalan 'FFFFFF'"},
             },
             "required": ["file_path", "slide_index", "hex_color"],
+        },
+    },
+    {
+        "name": "add_pptx_chart",
+        "description": "PowerPoint (.pptx) taqdimotiga diagramma (bar/line/pie) qo'shadi, berilgan kategoriyalar va seriyalar asosida.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "file_path": {"type": "string", "description": ".pptx fayl yo'li"},
+                "chart_type": {"type": "string", "enum": ["bar", "line", "pie"], "description": "Diagramma turi"},
+                "categories": {"type": "array", "items": {"type": "string"}, "description": "X o'qi label'lari"},
+                "series": {
+                    "type": "object",
+                    "description": "Seriya nomi -> qiymatlar ro'yxati, masalan {\"Savdo\": [10, 20, 30]}",
+                    "additionalProperties": {"type": "array", "items": {"type": "number"}},
+                },
+                "slide_index": {"type": "integer", "description": "Slayd indeksi (bo'lmasa oxirgi slayd)"},
+                "title": {"type": "string", "description": "Diagramma sarlavhasi (ixtiyoriy)"},
+            },
+            "required": ["file_path", "chart_type", "categories", "series"],
+        },
+    },
+    # ---------- PDF ----------
+    {
+        "name": "read_pdf_text",
+        "description": "PDF fayldan matnni o'qib chiqaradi (barcha yoki birinchi bir necha sahifa).",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "file_path": {"type": "string", "description": ".pdf fayl yo'li"},
+                "max_pages": {"type": "integer", "description": "O'qiladigan maksimal sahifalar soni (ixtiyoriy, bo'lmasa barchasi)"},
+            },
+            "required": ["file_path"],
+        },
+    },
+    {
+        "name": "read_pdf_tables",
+        "description": "PDF fayldagi har bir sahifadan jadvallarni ajratib oladi.",
+        "input_schema": {
+            "type": "object",
+            "properties": {"file_path": {"type": "string", "description": ".pdf fayl yo'li"}},
+            "required": ["file_path"],
+        },
+    },
+    {
+        "name": "get_pdf_metadata",
+        "description": "PDF faylning metama'lumotini (sarlavha, muallif, sahifalar soni, shifrlanganmi) qaytaradi.",
+        "input_schema": {
+            "type": "object",
+            "properties": {"file_path": {"type": "string", "description": ".pdf fayl yo'li"}},
+            "required": ["file_path"],
+        },
+    },
+    {
+        "name": "create_pdf",
+        "description": "Yangi PDF hujjat yaratadi — sarlavha va paragraflar bilan.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "file_path": {"type": "string", "description": "Yaratiladigan .pdf fayl yo'li"},
+                "title": {"type": "string", "description": "Hujjat sarlavhasi (ixtiyoriy)"},
+                "paragraphs": {"type": "array", "items": {"type": "string"}, "description": "Matn paragraflari (ixtiyoriy)"},
+                "overwrite": {"type": "boolean", "description": "Fayl mavjud bo'lsa, ustiga yozish (default: false)"},
+            },
+            "required": ["file_path"],
+        },
+    },
+    {
+        "name": "merge_pdfs",
+        "description": "Bir nechta PDF faylni ketma-ket bitta faylga birlashtiradi.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "file_paths": {"type": "array", "items": {"type": "string"}, "description": "Birlashtiriladigan PDF fayllar yo'li, tartib bo'yicha"},
+                "output_path": {"type": "string", "description": "Natija saqlanadigan .pdf fayl yo'li"},
+                "overwrite": {"type": "boolean", "description": "Fayl mavjud bo'lsa, ustiga yozish (default: false)"},
+            },
+            "required": ["file_paths", "output_path"],
+        },
+    },
+    {
+        "name": "split_pdf",
+        "description": "PDF faylni har bir sahifa alohida faylga bo'ladi (page_1.pdf, page_2.pdf, ...).",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "file_path": {"type": "string", "description": "Bo'linadigan .pdf fayl yo'li"},
+                "output_dir": {"type": "string", "description": "Natija fayllar saqlanadigan papka"},
+            },
+            "required": ["file_path", "output_dir"],
         },
     },
     # ---------- Avtomatik aniqlash ----------

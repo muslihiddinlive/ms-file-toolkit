@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ms-file-toolkit"
-version = "0.3.0"
+version = "0.4.0"
 description = "Microsoft fayllarni (DOCX/XLSX/PPTX) o'qish va yozish uchun AI function-calling Python toolkit"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -15,11 +15,17 @@ dependencies = [
     "openpyxl>=3.1.0",
     "python-pptx>=0.6.23",
     "Pillow>=10.0.0",
+    "pypdf>=4.0.0",
+    "pdfplumber>=0.11.0",
+    "reportlab>=4.0.0",
 ]
 
 [project.optional-dependencies]
 ai = ["anthropic>=0.40.0"]
 dev = ["pytest>=8.0.0"]
+
+[project.scripts]
+ms-toolkit = "ms_toolkit.cli:main"
 
 [project.urls]
 Homepage = "https://github.com/muslihiddinlive/ms-file-toolkit"
