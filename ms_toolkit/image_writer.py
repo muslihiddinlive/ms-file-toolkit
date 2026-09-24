@@ -38,8 +38,14 @@ def convert_image(
         fmt = (target_format or os.path.splitext(output_path)[1].lstrip(".") or "PNG").upper()
         if fmt == "JPG":
             fmt = "JPEG"
-        if fmt == "JPEG" and img.mode in ("RGBA", "P"):
-            img = img.convert("RGB")
+        if fmt == "JPEG" and img.mode in ("RGBA", "LA", "P"):
+            # To'g'ridan-to'g'ri .convert("RGB") shaffof qismlarni qora qilib
+            # qo'yadi (Pillow standart xatti-harakati) — buning o'rniga
+            # shaffof joylarni oq fonga joylashtiramiz.
+            img = img.convert("RGBA")
+            background = Image.new("RGB", img.size, (255, 255, 255))
+            background.paste(img, mask=img.split()[-1])
+            img = background
 
         os.makedirs(os.path.dirname(os.path.abspath(output_path)) or ".", exist_ok=True)
         img.save(output_path, format=fmt)

@@ -841,4 +841,294 @@ TOOLS = [
                                                                'description': 'Ustun ajratkichi '
                                                                               "(default: ',')"}},
                             'required': ['file_path', 'output_dir']}},
+    # ---------- Kod / matn fayllari (.py, .js, .html, .css, .json, .csv, .txt va h.k.) ----------
+    {
+        "name": "read_code_file",
+        "description": "Kod yoki matn faylini (.py, .js, .html, .css, .json, .csv, .txt va h.k.) to'liq o'qiydi.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "file_path": {"type": "string", "description": "O'qiladigan fayl yo'li"},
+                "max_chars": {
+                    "type": "integer",
+                    "description": "Maksimal belgi soni (default: 200000), undan katta bo'lsa kesib qo'yiladi",
+                },
+            },
+            "required": ["file_path"],
+        },
+    },
+    {
+        "name": "read_code_lines",
+        "description": "Kod/matn faylining faqat berilgan qator oralig'ini o'qiydi (masalan, xatolik yuz bergan joy atrofini ko'rish uchun).",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "file_path": {"type": "string", "description": "Fayl yo'li"},
+                "start_line": {"type": "integer", "description": "Boshlanish qatori (1-based, default: 1)"},
+                "end_line": {"type": "integer", "description": "Tugash qatori (inklyuziv, berilmasa faylning oxirigacha)"},
+            },
+            "required": ["file_path"],
+        },
+    },
+    {
+        "name": "create_code_file",
+        "description": "Yangi kod/matn faylini yaratadi, kerak bo'lsa oraliq papkalarni ham avtomatik yaratadi.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "file_path": {"type": "string", "description": "Yaratiladigan fayl yo'li"},
+                "content": {"type": "string", "description": "Fayl mazmuni (ixtiyoriy, default: bo'sh)"},
+                "overwrite": {"type": "boolean", "description": "Fayl mavjud bo'lsa, ustiga yozish (default: false)"},
+            },
+            "required": ["file_path"],
+        },
+    },
+    {
+        "name": "append_code_text",
+        "description": "Mavjud kod/matn faylining oxiriga matn qo'shadi. Fayl mavjud bo'lmasa, yangisini yaratadi.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "file_path": {"type": "string", "description": "Fayl yo'li"},
+                "text": {"type": "string", "description": "Qo'shiladigan matn"},
+                "newline_before": {"type": "boolean", "description": "Qo'shishdan oldin yangi qator qo'yish (default: true)"},
+            },
+            "required": ["file_path", "text"],
+        },
+    },
+    {
+        "name": "replace_code_text",
+        "description": "Fayldagi 'find' matnini 'replace' bilan almashtiradi (oddiy string qidiruv, regex emas).",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "file_path": {"type": "string", "description": "Fayl yo'li"},
+                "find": {"type": "string", "description": "Qidiriladigan matn"},
+                "replace": {"type": "string", "description": "Almashtiriladigan matn"},
+                "save_as": {"type": "string", "description": "Boshqa faylga saqlash (ixtiyoriy, berilmasa ustiga yoziladi)"},
+                "count": {"type": "integer", "description": "Nechta marta almashtirish (default: -1, hammasi)"},
+            },
+            "required": ["file_path", "find", "replace"],
+        },
+    },
+    {
+        "name": "insert_code_lines",
+        "description": "Berilgan qator raqami oldiga yangi matn qatorini qo'shadi (1-based).",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "file_path": {"type": "string", "description": "Fayl yo'li"},
+                "line_number": {"type": "integer", "description": "Matn shu qator OLDIGA qo'yiladi (1-based)"},
+                "text": {"type": "string", "description": "Qo'shiladigan matn (bir yoki bir nechta qator)"},
+            },
+            "required": ["file_path", "line_number", "text"],
+        },
+    },
+    {
+        "name": "delete_code_lines",
+        "description": "Fayldan berilgan qator oralig'ini o'chiradi (1-based, end_line inklyuziv).",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "file_path": {"type": "string", "description": "Fayl yo'li"},
+                "start_line": {"type": "integer", "description": "O'chirish boshlanadigan qator"},
+                "end_line": {"type": "integer", "description": "O'chirish tugaydigan qator (berilmasa faqat start_line o'chadi)"},
+            },
+            "required": ["file_path", "start_line"],
+        },
+    },
+    {
+        "name": "list_directory_files",
+        "description": "Papka ichidagi kod/matn fayllarini (yo'li, hajmi, kengaytmasi bilan) ro'yxatlaydi.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "dir_path": {"type": "string", "description": "Ko'riladigan papka yo'li"},
+                "extensions": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "description": "Faqat shu kengaytmalar (masalan ['.py', '.js']), berilmasa hammasi",
+                },
+                "recursive": {"type": "boolean", "description": "Ichki papkalarni ham qidirish (default: true)"},
+            },
+            "required": ["dir_path"],
+        },
+    },
+    {
+        "name": "search_in_files",
+        "description": "Papka ichidagi kod/matn fayllarida berilgan matnni qidiradi (grep uslubida), fayl va qator raqami bilan qaytaradi.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "dir_path": {"type": "string", "description": "Qidiriladigan papka yo'li"},
+                "query": {"type": "string", "description": "Qidiriladigan matn"},
+                "extensions": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "description": "Faqat shu kengaytmalar ichida qidirish (ixtiyoriy)",
+                },
+                "case_sensitive": {"type": "boolean", "description": "Katta-kichik harfga sezgir qidiruv (default: false)"},
+            },
+            "required": ["dir_path", "query"],
+        },
+    },
+    # ---------- Rasmlar (crop, resize, rotate, blank canvas) ----------
+    {
+        "name": "crop_image",
+        "description": "Rasmni berilgan to'rtburchak chegaralari bo'yicha kesadi (piksellarda, yuqori chap burchak 0,0).",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "file_path": {"type": "string", "description": "Rasm fayli yo'li"},
+                "left": {"type": "integer", "description": "Chap chegara (piksel)"},
+                "top": {"type": "integer", "description": "Yuqori chegara (piksel)"},
+                "right": {"type": "integer", "description": "O'ng chegara (piksel)"},
+                "bottom": {"type": "integer", "description": "Pastki chegara (piksel)"},
+                "save_as": {"type": "string", "description": "Boshqa faylga saqlash (ixtiyoriy, berilmasa ustiga yoziladi)"},
+            },
+            "required": ["file_path", "left", "top", "right", "bottom"],
+        },
+    },
+    {
+        "name": "resize_image",
+        "description": "Rasm o'lchamini o'zgartiradi (formatni o'zgartirmasdan). width/height dan bittasi berilsa, nisbat saqlanib ikkinchisi hisoblanadi.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "file_path": {"type": "string", "description": "Rasm fayli yo'li"},
+                "width": {"type": "integer", "description": "Yangi kenglik (piksel, ixtiyoriy)"},
+                "height": {"type": "integer", "description": "Yangi balandlik (piksel, ixtiyoriy)"},
+                "save_as": {"type": "string", "description": "Boshqa faylga saqlash (ixtiyoriy, berilmasa ustiga yoziladi)"},
+                "keep_aspect_ratio": {"type": "boolean", "description": "Asl nisbatni saqlash (default: true)"},
+            },
+            "required": ["file_path"],
+        },
+    },
+    {
+        "name": "rotate_image",
+        "description": "Rasmni berilgan gradusga (soat yo'nalishiga qarshi) aylantiradi.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "file_path": {"type": "string", "description": "Rasm fayli yo'li"},
+                "degrees": {"type": "number", "description": "Aylantirish burchagi (gradus)"},
+                "save_as": {"type": "string", "description": "Boshqa faylga saqlash (ixtiyoriy, berilmasa ustiga yoziladi)"},
+                "expand": {"type": "boolean", "description": "Aylantirilganda rasm o'lchamini kengaytirish (default: true)"},
+            },
+            "required": ["file_path", "degrees"],
+        },
+    },
+    {
+        "name": "create_image",
+        "description": "Bo'sh (bir rangli) yangi rasm yaratadi — fon yoki placeholder sifatida.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "width": {"type": "integer", "description": "Rasm kengligi (piksel)"},
+                "height": {"type": "integer", "description": "Rasm balandligi (piksel)"},
+                "output_path": {"type": "string", "description": "Saqlanadigan fayl yo'li"},
+                "color": {"type": "string", "description": "Rang, hex (#RRGGBB) yoki nom (masalan 'red') (default: '#FFFFFF')"},
+            },
+            "required": ["width", "height", "output_path"],
+        },
+    },
+    # ---------- Internetdan ma'lumot olish (fayl yuklash, web scraping, qidiruv) ----------
+    {
+        "name": "download_file",
+        "description": "Berilgan URL'dan faylni yuklab, diskka saqlaydi (rasm, PDF, arxiv va h.k. bo'lishi mumkin).",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "url": {"type": "string", "description": "Yuklanadigan fayl manzili (http:// yoki https://)"},
+                "output_path": {"type": "string", "description": "Fayl saqlanadigan yo'l"},
+                "max_bytes": {"type": "integer", "description": "Maksimal ruxsat etilgan fayl hajmi baytda (default: 50MB)"},
+                "timeout": {"type": "integer", "description": "So'rov timeout soniyada (default: 15)"},
+            },
+            "required": ["url", "output_path"],
+        },
+    },
+    {
+        "name": "fetch_url_text",
+        "description": "URL'dan sahifaning xom (raw) matn/HTML mazmunini oladi, tozalanmagan holda.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "url": {"type": "string", "description": "So'rov yuboriladigan manzil (http:// yoki https://)"},
+                "timeout": {"type": "integer", "description": "So'rov timeout soniyada (default: 15)"},
+                "max_chars": {"type": "integer", "description": "Maksimal belgi soni (default: 200000)"},
+            },
+            "required": ["url"],
+        },
+    },
+    {
+        "name": "scrape_page_text",
+        "description": "Web-sahifadan o'qiladigan matnni ajratib oladi (HTML teglar, skript va stillar olib tashlanadi). Sahifa sarlavhasini ham qaytaradi.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "url": {"type": "string", "description": "Sahifa manzili (http:// yoki https://)"},
+                "timeout": {"type": "integer", "description": "So'rov timeout soniyada (default: 15)"},
+                "max_chars": {"type": "integer", "description": "Maksimal belgi soni (default: 100000)"},
+            },
+            "required": ["url"],
+        },
+    },
+    {
+        "name": "extract_page_links",
+        "description": "Web-sahifadagi barcha havolalarni (matni bilan birga, to'liq URL holida) ajratib oladi.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "url": {"type": "string", "description": "Sahifa manzili (http:// yoki https://)"},
+                "timeout": {"type": "integer", "description": "So'rov timeout soniyada (default: 15)"},
+                "same_domain_only": {"type": "boolean", "description": "Faqat bir xil domendagi havolalarni qaytarish (default: false)"},
+            },
+            "required": ["url"],
+        },
+    },
+    {
+        "name": "extract_page_images",
+        "description": "Web-sahifadagi barcha rasm (<img>) manzillarini to'liq URL holida ajratib oladi.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "url": {"type": "string", "description": "Sahifa manzili (http:// yoki https://)"},
+                "timeout": {"type": "integer", "description": "So'rov timeout soniyada (default: 15)"},
+            },
+            "required": ["url"],
+        },
+    },
+    {
+        "name": "search_web",
+        "description": (
+            "Internetda matn qidiruvi (kalit talab qilmaydi). Savolga to'g'ridan-to'g'ri javob "
+            "bermaydi — natijada topilgan sahifalar (sarlavha, manzil, qisqa tavsif) qaytadi. "
+            "So'ngra kerakli manzilni scrape_page_text yoki fetch_url_text bilan o'qing."
+        ),
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "query": {"type": "string", "description": "Qidiriladigan so'rov matni"},
+                "max_results": {"type": "integer", "description": "Maksimal natijalar soni (default: 8)"},
+                "timeout": {"type": "integer", "description": "So'rov timeout soniyada (default: 15)"},
+            },
+            "required": ["query"],
+        },
+    },
+    {
+        "name": "get_known_changelog_url",
+        "description": (
+            "Ma'lum bir servis (masalan 'Telegram Bot API', 'Discord API', 'OpenAI API') uchun "
+            "oldindan tayyorlangan rasmiy changelog/hujjat manzilini qaytaradi. Bu search_web'dan "
+            "tezroq va ishonchliroq, chunki bevosita rasmiy manbaga ishora qiladi. Ro'yxatda yo'q "
+            "servis uchun search_web ishlatishni tavsiya qiladi."
+        ),
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "service_name": {"type": "string", "description": "Servis nomi (masalan 'telegram bot api', 'discord api')"}
+            },
+            "required": ["service_name"],
+        },
+    },
 ]

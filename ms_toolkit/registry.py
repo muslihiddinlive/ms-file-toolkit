@@ -34,13 +34,23 @@ from .opendoc_tool import (
     read_odp_text, get_odp_slide_count,
 )
 from .opendoc_writer import create_odt, create_ods, create_odp
-from .image_tool import get_image_info, read_image_text
+from .image_tool import get_image_info, read_image_text, crop_image, resize_image, rotate_image, create_image
 from .image_writer import convert_image, create_thumbnail
 from .archive_tool import list_archive_contents, read_archive_file
 from .archive_writer import create_archive, extract_archive
 from .convert_tool import (
     convert_docx_to_pdf, convert_pptx_to_pdf, convert_xlsx_to_pdf,
     convert_pdf_to_images, convert_pptx_to_images, convert_xlsx_to_csv,
+)
+from .code_tool import (
+    read_code_file, read_code_lines, create_code_file, append_code_text,
+    replace_code_text, insert_code_lines, delete_code_lines,
+    list_directory_files, search_in_files,
+)
+from .web_tool import (
+    download_file, fetch_url_text, scrape_page_text,
+    extract_page_links, extract_page_images,
+    search_web, get_known_changelog_url,
 )
 from .security import resolve_safe_path, UnsafePathError
 
@@ -110,6 +120,10 @@ REGISTRY = {
     "read_image_text": read_image_text,
     "convert_image": convert_image,
     "create_thumbnail": create_thumbnail,
+    "crop_image": crop_image,
+    "resize_image": resize_image,
+    "rotate_image": rotate_image,
+    "create_image": create_image,
     # Arxiv (ZIP)
     "list_archive_contents": list_archive_contents,
     "read_archive_file": read_archive_file,
@@ -122,11 +136,29 @@ REGISTRY = {
     "convert_pdf_to_images": convert_pdf_to_images,
     "convert_pptx_to_images": convert_pptx_to_images,
     "convert_xlsx_to_csv": convert_xlsx_to_csv,
+    # Kod/matn fayllari (.py, .js, .html, .css, .json, .csv, .txt va h.k.)
+    "read_code_file": read_code_file,
+    "read_code_lines": read_code_lines,
+    "create_code_file": create_code_file,
+    "append_code_text": append_code_text,
+    "replace_code_text": replace_code_text,
+    "insert_code_lines": insert_code_lines,
+    "delete_code_lines": delete_code_lines,
+    "list_directory_files": list_directory_files,
+    "search_in_files": search_in_files,
+    # Internetdan ma'lumot olish (fayl yuklash, web scraping, qidiruv)
+    "download_file": download_file,
+    "fetch_url_text": fetch_url_text,
+    "scrape_page_text": scrape_page_text,
+    "extract_page_links": extract_page_links,
+    "extract_page_images": extract_page_images,
+    "search_web": search_web,
+    "get_known_changelog_url": get_known_changelog_url,
 }
 
 # file_path/image_path qabul qiladigan tool'lar uchun xavfsizlik tekshiruvi
 # qo'llaniladigan parametr nomlari (scalar yo'llar)
-_PATH_PARAMS = ("file_path", "image_path", "save_as", "output_path", "output_dir")
+_PATH_PARAMS = ("file_path", "image_path", "save_as", "output_path", "output_dir", "dir_path")
 # ro'yxat (list) ko'rinishidagi fayl yo'llari (masalan merge_pdfs)
 _PATH_LIST_PARAMS = ("file_paths",)
 

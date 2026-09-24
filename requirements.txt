@@ -19,6 +19,10 @@ pymupdf>=1.24.0
 # Faqat rasm qo'shish funksiyalari (add_docx_image, add_pptx_image) uchun kerak
 Pillow>=10.0.0
 
+# Internetdan fayl yuklash, web scraping va qidiruv uchun (web_tool.py)
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+
 # Faqat example.py (Claude API demo) uchun kerak — asosiy toolkit uchun shart emas
 anthropic>=0.40.0
 
