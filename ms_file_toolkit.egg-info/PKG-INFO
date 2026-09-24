@@ -1,3 +1,30 @@
+Metadata-Version: 2.4
+Name: ms-file-toolkit
+Version: 0.5.0
+Summary: Microsoft, OpenDocument, PDF, CSV, rasm va arxiv fayllarni o'qish/yozish uchun AI function-calling Python toolkit
+Author: muslihiddinlive
+License: MIT
+Project-URL: Homepage, https://github.com/muslihiddinlive/ms-file-toolkit
+Project-URL: Repository, https://github.com/muslihiddinlive/ms-file-toolkit
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: python-docx>=1.1.0
+Requires-Dist: openpyxl>=3.1.0
+Requires-Dist: python-pptx>=0.6.23
+Requires-Dist: Pillow>=10.0.0
+Requires-Dist: pypdf>=4.0.0
+Requires-Dist: pdfplumber>=0.11.0
+Requires-Dist: reportlab>=4.0.0
+Requires-Dist: odfpy>=1.4.1
+Requires-Dist: pytesseract>=0.3.10
+Requires-Dist: pymupdf>=1.24.0
+Provides-Extra: ai
+Requires-Dist: anthropic>=0.40.0; extra == "ai"
+Provides-Extra: dev
+Requires-Dist: pytest>=8.0.0; extra == "dev"
+Dynamic: license-file
+
 # ms-file-toolkit
 
 Microsoft, OpenDocument va PDF fayllarni **o'qish va yozish** uchun Python toolkit — **AI function calling** (Claude, GPT va h.k.) uchun tayyor tool schemalari, **xavfsizlik nazorati**, **avtomatik format aniqlash**, **format konvertatsiya** va **CLI** bilan.

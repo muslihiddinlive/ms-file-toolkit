@@ -1,0 +1,2 @@
+[console_scripts]
+ms-toolkit = ms_toolkit.cli:main

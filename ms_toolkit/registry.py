@@ -27,6 +27,21 @@ from .pdf_tool import read_pdf_text, read_pdf_tables, get_pdf_metadata
 from .pdf_writer import create_pdf, merge_pdfs, split_pdf
 from .legacy_tool import read_legacy_file
 from .auto_tool import read_any_file, get_file_info
+from .csv_tool import read_csv_data, get_csv_summary
+from .csv_writer import create_csv, append_csv_rows
+from .opendoc_tool import (
+    read_odt_text, get_ods_sheet_names, read_ods_data,
+    read_odp_text, get_odp_slide_count,
+)
+from .opendoc_writer import create_odt, create_ods, create_odp
+from .image_tool import get_image_info, read_image_text
+from .image_writer import convert_image, create_thumbnail
+from .archive_tool import list_archive_contents, read_archive_file
+from .archive_writer import create_archive, extract_archive
+from .convert_tool import (
+    convert_docx_to_pdf, convert_pptx_to_pdf, convert_xlsx_to_pdf,
+    convert_pdf_to_images, convert_pptx_to_images, convert_xlsx_to_csv,
+)
 from .security import resolve_safe_path, UnsafePathError
 
 REGISTRY = {
@@ -76,6 +91,37 @@ REGISTRY = {
     # Auto-detect
     "read_any_file": read_any_file,
     "get_file_info": get_file_info,
+    # CSV
+    "read_csv_data": read_csv_data,
+    "get_csv_summary": get_csv_summary,
+    "create_csv": create_csv,
+    "append_csv_rows": append_csv_rows,
+    # OpenDocument (.odt/.ods/.odp)
+    "read_odt_text": read_odt_text,
+    "get_ods_sheet_names": get_ods_sheet_names,
+    "read_ods_data": read_ods_data,
+    "read_odp_text": read_odp_text,
+    "get_odp_slide_count": get_odp_slide_count,
+    "create_odt": create_odt,
+    "create_ods": create_ods,
+    "create_odp": create_odp,
+    # Rasm (image)
+    "get_image_info": get_image_info,
+    "read_image_text": read_image_text,
+    "convert_image": convert_image,
+    "create_thumbnail": create_thumbnail,
+    # Arxiv (ZIP)
+    "list_archive_contents": list_archive_contents,
+    "read_archive_file": read_archive_file,
+    "create_archive": create_archive,
+    "extract_archive": extract_archive,
+    # Konvertatsiya
+    "convert_docx_to_pdf": convert_docx_to_pdf,
+    "convert_pptx_to_pdf": convert_pptx_to_pdf,
+    "convert_xlsx_to_pdf": convert_xlsx_to_pdf,
+    "convert_pdf_to_images": convert_pdf_to_images,
+    "convert_pptx_to_images": convert_pptx_to_images,
+    "convert_xlsx_to_csv": convert_xlsx_to_csv,
 }
 
 # file_path/image_path qabul qiladigan tool'lar uchun xavfsizlik tekshiruvi

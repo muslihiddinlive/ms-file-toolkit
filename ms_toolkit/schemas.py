@@ -507,4 +507,338 @@ TOOLS = [
             "required": ["file_path"],
         },
     },
+    # ---------- CSV ----------
+    {   'name': 'read_csv_data',
+        'description': "CSV fayldan sarlavha va qatorlarni o'qiydi.",
+        'input_schema': {   'type': 'object',
+                            'properties': {   'file_path': {   'type': 'string',
+                                                               'description': ".csv fayl yo'li"},
+                                              'max_rows': {   'type': 'integer',
+                                                              'description': "O'qiladigan maksimal "
+                                                                             'qator soni (ixtiyoriy)'},
+                                              'delimiter': {   'type': 'string',
+                                                               'description': 'Ustun ajratkichi '
+                                                                              "(default: ',')"}},
+                            'required': ['file_path']}},
+    {   'name': 'get_csv_summary',
+        'description': 'CSV faylning umumiy tuzilishini (ustunlar, qatorlar soni, namuna) qaytaradi.',
+        'input_schema': {   'type': 'object',
+                            'properties': {   'file_path': {   'type': 'string',
+                                                               'description': ".csv fayl yo'li"},
+                                              'delimiter': {   'type': 'string',
+                                                               'description': 'Ustun ajratkichi '
+                                                                              "(default: ',')"}},
+                            'required': ['file_path']}},
+    {   'name': 'create_csv',
+        'description': "Yangi CSV fayl yaratadi (ixtiyoriy sarlavha va boshlang'ich qatorlar bilan).",
+        'input_schema': {   'type': 'object',
+                            'properties': {   'file_path': {   'type': 'string',
+                                                               'description': 'Yaratiladigan .csv fayl '
+                                                                              "yo'li"},
+                                              'headers': {   'type': 'array',
+                                                             'items': {'type': 'string'},
+                                                             'description': 'Ustun sarlavhalari '
+                                                                            '(ixtiyoriy)'},
+                                              'rows': {   'type': 'array',
+                                                          'items': {   'type': 'array',
+                                                                       'items': {'type': 'string'}},
+                                                          'description': "Boshlang'ich qatorlar "
+                                                                         '(ixtiyoriy)'},
+                                              'delimiter': {   'type': 'string',
+                                                               'description': 'Ustun ajratkichi '
+                                                                              "(default: ',')"},
+                                              'overwrite': {   'type': 'boolean',
+                                                               'description': "Fayl mavjud bo'lsa, "
+                                                                              'ustiga yozish (default: '
+                                                                              'false)'}},
+                            'required': ['file_path']}},
+    {   'name': 'append_csv_rows',
+        'description': "Mavjud CSV faylning oxiriga yangi qatorlar qo'shadi.",
+        'input_schema': {   'type': 'object',
+                            'properties': {   'file_path': {   'type': 'string',
+                                                               'description': ".csv fayl yo'li"},
+                                              'rows': {   'type': 'array',
+                                                          'items': {   'type': 'array',
+                                                                       'items': {'type': 'string'}},
+                                                          'description': "Qo'shiladigan qatorlar"},
+                                              'delimiter': {   'type': 'string',
+                                                               'description': 'Ustun ajratkichi '
+                                                                              "(default: ',')"}},
+                            'required': ['file_path', 'rows']}},
+    # ---------- OpenDocument (.odt/.ods/.odp) ----------
+    {   'name': 'read_odt_text',
+        'description': "OpenDocument Text (.odt) fayldan barcha matnni o'qiydi.",
+        'input_schema': {   'type': 'object',
+                            'properties': {   'file_path': {   'type': 'string',
+                                                               'description': ".odt fayl yo'li"}},
+                            'required': ['file_path']}},
+    {   'name': 'get_ods_sheet_names',
+        'description': 'OpenDocument Spreadsheet (.ods) fayldagi varaq nomlarini qaytaradi.',
+        'input_schema': {   'type': 'object',
+                            'properties': {   'file_path': {   'type': 'string',
+                                                               'description': ".ods fayl yo'li"}},
+                            'required': ['file_path']}},
+    {   'name': 'read_ods_data',
+        'description': "OpenDocument Spreadsheet (.ods) faylidan varaq ma'lumotlarini o'qiydi.",
+        'input_schema': {   'type': 'object',
+                            'properties': {   'file_path': {   'type': 'string',
+                                                               'description': ".ods fayl yo'li"},
+                                              'sheet_name': {   'type': 'string',
+                                                                'description': "O'qiladigan varaq nomi "
+                                                                               '(ixtiyoriy, default: '
+                                                                               'birinchi varaq)'},
+                                              'max_rows': {   'type': 'integer',
+                                                              'description': "O'qiladigan maksimal "
+                                                                             'qator soni (ixtiyoriy)'}},
+                            'required': ['file_path']}},
+    {   'name': 'read_odp_text',
+        'description': "OpenDocument Presentation (.odp) fayldan har bir slayd matnini o'qiydi.",
+        'input_schema': {   'type': 'object',
+                            'properties': {   'file_path': {   'type': 'string',
+                                                               'description': ".odp fayl yo'li"}},
+                            'required': ['file_path']}},
+    {   'name': 'get_odp_slide_count',
+        'description': 'OpenDocument Presentation (.odp) fayldagi slaydlar sonini qaytaradi.',
+        'input_schema': {   'type': 'object',
+                            'properties': {   'file_path': {   'type': 'string',
+                                                               'description': ".odp fayl yo'li"}},
+                            'required': ['file_path']}},
+    {   'name': 'create_odt',
+        'description': 'Yangi OpenDocument Text (.odt) hujjat yaratadi (sarlavha + paragraflar bilan).',
+        'input_schema': {   'type': 'object',
+                            'properties': {   'file_path': {   'type': 'string',
+                                                               'description': 'Yaratiladigan .odt fayl '
+                                                                              "yo'li"},
+                                              'title': {   'type': 'string',
+                                                           'description': 'Hujjat sarlavhasi '
+                                                                          '(ixtiyoriy)'},
+                                              'paragraphs': {   'type': 'array',
+                                                                'items': {'type': 'string'},
+                                                                'description': 'Matn paragraflari '
+                                                                               '(ixtiyoriy)'},
+                                              'overwrite': {   'type': 'boolean',
+                                                               'description': "Fayl mavjud bo'lsa, "
+                                                                              'ustiga yozish (default: '
+                                                                              'false)'}},
+                            'required': ['file_path']}},
+    {   'name': 'create_ods',
+        'description': "Yangi OpenDocument Spreadsheet (.ods) fayl yaratadi (2-o'lchamli qatorlar "
+                       "ro'yxatidan).",
+        'input_schema': {   'type': 'object',
+                            'properties': {   'file_path': {   'type': 'string',
+                                                               'description': 'Yaratiladigan .ods fayl '
+                                                                              "yo'li"},
+                                              'rows': {   'type': 'array',
+                                                          'items': {   'type': 'array',
+                                                                       'items': {'type': 'string'}},
+                                                          'description': 'Jadval qatorlari, birinchi '
+                                                                         "qator sarlavha bo'lishi "
+                                                                         'mumkin'},
+                                              'sheet_name': {   'type': 'string',
+                                                                'description': 'Varaq nomi (default: '
+                                                                               "'Sheet1')"},
+                                              'overwrite': {   'type': 'boolean',
+                                                               'description': "Fayl mavjud bo'lsa, "
+                                                                              'ustiga yozish (default: '
+                                                                              'false)'}},
+                            'required': ['file_path', 'rows']}},
+    {   'name': 'create_odp',
+        'description': 'Yangi OpenDocument Presentation (.odp) fayl yaratadi — har bir string bitta '
+                       'slayd matni.',
+        'input_schema': {   'type': 'object',
+                            'properties': {   'file_path': {   'type': 'string',
+                                                               'description': 'Yaratiladigan .odp fayl '
+                                                                              "yo'li"},
+                                              'slides': {   'type': 'array',
+                                                            'items': {'type': 'string'},
+                                                            'description': 'Har biri bitta slayd matni '
+                                                                           "bo'lgan ro'yxat"},
+                                              'overwrite': {   'type': 'boolean',
+                                                               'description': "Fayl mavjud bo'lsa, "
+                                                                              'ustiga yozish (default: '
+                                                                              'false)'}},
+                            'required': ['file_path', 'slides']}},
+    # ---------- Rasm (Image) ----------
+    {   'name': 'get_image_info',
+        'description': "Rasm haqida asosiy ma'lumot: o'lcham, format, rang rejimi, hajmi.",
+        'input_schema': {   'type': 'object',
+                            'properties': {   'file_path': {   'type': 'string',
+                                                               'description': "Rasm fayli yo'li"}},
+                            'required': ['file_path']}},
+    {   'name': 'read_image_text',
+        'description': 'Rasmdagi matnni OCR (Tesseract) orqali ajratib oladi.',
+        'input_schema': {   'type': 'object',
+                            'properties': {   'file_path': {   'type': 'string',
+                                                               'description': "Rasm fayli yo'li"},
+                                              'lang': {   'type': 'string',
+                                                          'description': 'Tesseract til kodi (default: '
+                                                                         "'eng'; masalan 'eng+rus')"}},
+                            'required': ['file_path']}},
+    {   'name': 'convert_image',
+        'description': "Rasmni boshqa formatga o'giradi va/yoki o'lchamini o'zgartiradi.",
+        'input_schema': {   'type': 'object',
+                            'properties': {   'file_path': {   'type': 'string',
+                                                               'description': "Manba rasm fayli yo'li"},
+                                              'output_path': {   'type': 'string',
+                                                                 'description': 'Natija rasm fayli '
+                                                                                "yo'li"},
+                                              'target_format': {   'type': 'string',
+                                                                   'description': 'Maqsad format '
+                                                                                  "(masalan 'PNG', "
+                                                                                  "'JPEG', 'WEBP'); "
+                                                                                  'berilmasa '
+                                                                                  'output_path '
+                                                                                  'kengaytmasidan '
+                                                                                  'aniqlanadi'},
+                                              'width': {   'type': 'integer',
+                                                           'description': 'Yangi kenglik (ixtiyoriy, '
+                                                                          "proporsional o'zgaradi)"},
+                                              'height': {   'type': 'integer',
+                                                            'description': 'Yangi balandlik '
+                                                                           '(ixtiyoriy, proporsional '
+                                                                           "o'zgaradi)"},
+                                              'overwrite': {   'type': 'boolean',
+                                                               'description': "Fayl mavjud bo'lsa, "
+                                                                              'ustiga yozish (default: '
+                                                                              'false)'}},
+                            'required': ['file_path', 'output_path']}},
+    {   'name': 'create_thumbnail',
+        'description': 'Rasmdan (proporsiyani saqlab) thumbnail (kichik nusxa) yaratadi.',
+        'input_schema': {   'type': 'object',
+                            'properties': {   'file_path': {   'type': 'string',
+                                                               'description': "Manba rasm fayli yo'li"},
+                                              'output_path': {   'type': 'string',
+                                                                 'description': 'Natija thumbnail '
+                                                                                "fayli yo'li"},
+                                              'size': {   'type': 'integer',
+                                                          'description': "Maksimal tomon o'lchami "
+                                                                         'piksellarda (default: 128)'},
+                                              'overwrite': {   'type': 'boolean',
+                                                               'description': "Fayl mavjud bo'lsa, "
+                                                                              'ustiga yozish (default: '
+                                                                              'false)'}},
+                            'required': ['file_path', 'output_path']}},
+    # ---------- Arxiv (ZIP) ----------
+    {   'name': 'list_archive_contents',
+        'description': "ZIP arxiv ichidagi barcha fayllar ro'yxatini (nom, hajm) qaytaradi.",
+        'input_schema': {   'type': 'object',
+                            'properties': {   'file_path': {   'type': 'string',
+                                                               'description': ".zip fayl yo'li"}},
+                            'required': ['file_path']}},
+    {   'name': 'read_archive_file',
+        'description': "ZIP arxiv ichidagi bitta matnli faylni o'qib, matnini qaytaradi.",
+        'input_schema': {   'type': 'object',
+                            'properties': {   'file_path': {   'type': 'string',
+                                                               'description': ".zip fayl yo'li"},
+                                              'entry_name': {   'type': 'string',
+                                                                'description': 'Arxiv ichidagi fayl '
+                                                                               'nomi'},
+                                              'encoding': {   'type': 'string',
+                                                              'description': 'Matn kodlash formati '
+                                                                             "(default: 'utf-8')"}},
+                            'required': ['file_path', 'entry_name']}},
+    {   'name': 'create_archive',
+        'description': 'Berilgan fayllardan yangi ZIP arxiv yaratadi.',
+        'input_schema': {   'type': 'object',
+                            'properties': {   'output_path': {   'type': 'string',
+                                                                 'description': 'Yaratiladigan .zip '
+                                                                                "fayl yo'li"},
+                                              'file_paths': {   'type': 'array',
+                                                                'items': {'type': 'string'},
+                                                                'description': "Arxivga qo'shiladigan "
+                                                                               "fayllar ro'yxati"},
+                                              'overwrite': {   'type': 'boolean',
+                                                               'description': "Fayl mavjud bo'lsa, "
+                                                                              'ustiga yozish (default: '
+                                                                              'false)'}},
+                            'required': ['output_path', 'file_paths']}},
+    {   'name': 'extract_archive',
+        'description': 'ZIP arxivni papkaga chiqaradi (zip-slip himoyasi bilan).',
+        'input_schema': {   'type': 'object',
+                            'properties': {   'file_path': {   'type': 'string',
+                                                               'description': ".zip fayl yo'li"},
+                                              'output_dir': {   'type': 'string',
+                                                                'description': 'Fayllar chiqariladigan '
+                                                                               'papka'}},
+                            'required': ['file_path', 'output_dir']}},
+    # ---------- Konvertatsiya ----------
+    {   'name': 'convert_docx_to_pdf',
+        'description': "Word (.docx) hujjatini PDF'ga o'giradi (LibreOffice orqali).",
+        'input_schema': {   'type': 'object',
+                            'properties': {   'file_path': {   'type': 'string',
+                                                               'description': ".docx fayl yo'li"},
+                                              'output_path': {   'type': 'string',
+                                                                 'description': 'Natija .pdf fayl '
+                                                                                "yo'li"},
+                                              'overwrite': {   'type': 'boolean',
+                                                               'description': "Fayl mavjud bo'lsa, "
+                                                                              'ustiga yozish (default: '
+                                                                              'false)'}},
+                            'required': ['file_path', 'output_path']}},
+    {   'name': 'convert_pptx_to_pdf',
+        'description': "PowerPoint (.pptx) taqdimotini PDF'ga o'giradi (LibreOffice orqali).",
+        'input_schema': {   'type': 'object',
+                            'properties': {   'file_path': {   'type': 'string',
+                                                               'description': ".pptx fayl yo'li"},
+                                              'output_path': {   'type': 'string',
+                                                                 'description': 'Natija .pdf fayl '
+                                                                                "yo'li"},
+                                              'overwrite': {   'type': 'boolean',
+                                                               'description': "Fayl mavjud bo'lsa, "
+                                                                              'ustiga yozish (default: '
+                                                                              'false)'}},
+                            'required': ['file_path', 'output_path']}},
+    {   'name': 'convert_xlsx_to_pdf',
+        'description': "Excel (.xlsx) faylini PDF'ga o'giradi (LibreOffice orqali).",
+        'input_schema': {   'type': 'object',
+                            'properties': {   'file_path': {   'type': 'string',
+                                                               'description': ".xlsx fayl yo'li"},
+                                              'output_path': {   'type': 'string',
+                                                                 'description': 'Natija .pdf fayl '
+                                                                                "yo'li"},
+                                              'overwrite': {   'type': 'boolean',
+                                                               'description': "Fayl mavjud bo'lsa, "
+                                                                              'ustiga yozish (default: '
+                                                                              'false)'}},
+                            'required': ['file_path', 'output_path']}},
+    {   'name': 'convert_pdf_to_images',
+        'description': 'PDF faylning har bir sahifasini alohida rasm faylga aylantiradi.',
+        'input_schema': {   'type': 'object',
+                            'properties': {   'file_path': {   'type': 'string',
+                                                               'description': ".pdf fayl yo'li"},
+                                              'output_dir': {   'type': 'string',
+                                                                'description': 'Rasmlar saqlanadigan '
+                                                                               'papka'},
+                                              'image_format': {   'type': 'string',
+                                                                  'description': 'Rasm formati '
+                                                                                 "(default: 'png')"},
+                                              'dpi': {   'type': 'integer',
+                                                         'description': 'Rasm sifati (default: 150)'}},
+                            'required': ['file_path', 'output_dir']}},
+    {   'name': 'convert_pptx_to_images',
+        'description': 'PowerPoint taqdimotining har bir slaydini rasmga aylantiradi.',
+        'input_schema': {   'type': 'object',
+                            'properties': {   'file_path': {   'type': 'string',
+                                                               'description': ".pptx fayl yo'li"},
+                                              'output_dir': {   'type': 'string',
+                                                                'description': 'Rasmlar saqlanadigan '
+                                                                               'papka'},
+                                              'image_format': {   'type': 'string',
+                                                                  'description': 'Rasm formati '
+                                                                                 "(default: 'png')"},
+                                              'dpi': {   'type': 'integer',
+                                                         'description': 'Rasm sifati (default: 150)'}},
+                            'required': ['file_path', 'output_dir']}},
+    {   'name': 'convert_xlsx_to_csv',
+        'description': "Excel (.xlsx) faylning har bir varag'ini alohida CSV faylga eksport qiladi.",
+        'input_schema': {   'type': 'object',
+                            'properties': {   'file_path': {   'type': 'string',
+                                                               'description': ".xlsx fayl yo'li"},
+                                              'output_dir': {   'type': 'string',
+                                                                'description': 'CSV fayllar '
+                                                                               'saqlanadigan papka'},
+                                              'delimiter': {   'type': 'string',
+                                                               'description': 'Ustun ajratkichi '
+                                                                              "(default: ',')"}},
+                            'required': ['file_path', 'output_dir']}},
 ]

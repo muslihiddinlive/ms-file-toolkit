@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ms-file-toolkit"
-version = "0.4.0"
-description = "Microsoft fayllarni (DOCX/XLSX/PPTX) o'qish va yozish uchun AI function-calling Python toolkit"
+version = "0.5.0"
+description = "Microsoft, OpenDocument, PDF, CSV, rasm va arxiv fayllarni o'qish/yozish uchun AI function-calling Python toolkit"
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }
@@ -18,6 +18,9 @@ dependencies = [
     "pypdf>=4.0.0",
     "pdfplumber>=0.11.0",
     "reportlab>=4.0.0",
+    "odfpy>=1.4.1",
+    "pytesseract>=0.3.10",
+    "pymupdf>=1.24.0",
 ]
 
 [project.optional-dependencies]

@@ -7,6 +7,15 @@ pypdf>=4.0.0
 pdfplumber>=0.11.0
 reportlab>=4.0.0
 
+# OpenDocument (.odt/.ods/.odp) o'qish/yozish uchun
+odfpy>=1.4.1
+
+# Rasmdan matn o'qish (OCR) uchun — tizimda tesseract-ocr binary ham kerak
+pytesseract>=0.3.10
+
+# PDF sahifalarini rasmga aylantirish (convert_pdf_to_images, convert_pptx_to_images) uchun
+pymupdf>=1.24.0
+
 # Faqat rasm qo'shish funksiyalari (add_docx_image, add_pptx_image) uchun kerak
 Pillow>=10.0.0
 
