@@ -7,7 +7,7 @@ name = "ms-file-toolkit"
 version = "0.8.0"
 description = "Microsoft, OpenDocument, PDF, CSV, rasm va arxiv fayllarni o'qish/yozish uchun AI function-calling Python toolkit"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [{ name = "muslihiddinlive" }]
 dependencies = [
@@ -25,11 +25,13 @@ dependencies = [
     "beautifulsoup4>=4.12.0",
     "segno>=1.6.0",
     "zxing-cpp>=2.2.0",
+    "tg-mod-functions>=0.4.0",
 ]
 
 [project.optional-dependencies]
 ai = ["anthropic>=0.40.0"]
-telegram = ["tg-mod-functions>=0.4.0"]
+# Eski "ms-file-toolkit[telegram]" buyrug'i buzilmasligi uchun saqlangan (endi majburiy)
+telegram = []
 dev = ["pytest>=8.0.0"]
 
 [project.scripts]

@@ -48,15 +48,13 @@ dispatch("convert_xlsx_to_csv", {"file_path": "hisobot.xlsx", "output_dir": "csv
 
 `convert_pptx_to_images` va `convert_pdf_to_images` tashqi system-binary talab qilmaydi (PyMuPDF orqali); `convert_*_to_pdf` funksiyalari LibreOffice orqali ishlaydi.
 
-## Telegram guruh moderatsiyasi (ixtiyoriy)
+## Telegram guruh moderatsiyasi
 
 [`tg-mod-functions`](https://pypi.org/project/tg-mod-functions/) ning 25 ta moderatsiya tool'i
 (ban, mute, warn, promote, join-request, lockdown, reaction va h.k.) fayl tool'lari bilan bir xil
 `dispatch()` orqali ishlaydi:
 
-```bash
-pip install "ms-file-toolkit[telegram]"
-```
+`pip install ms-file-toolkit` hammasini birga o'rnatadi (alohida extra kerak emas).
 
 ```python
 from aiogram import Bot
@@ -77,6 +75,7 @@ dispatch("ban_user", {"chat_id": -100123, "user_id": 42, "minutes": 60})
 Guruh yaratuvchisi (creator) va `protected_user_ids` dagi akkauntlar har doim himoyalangan: AI
 adashsa yoki aldansa ham ularga ban/mute/kick/warn/demote qilib bo'lmaydi.
 `configure_telegram()` chaqirilmaguncha bu tool'lar yoqilmaydi va fayl tool'lariga ta'sir qilmaydi.
+Python 3.10+ talab qilinadi.
 
 ## PDF va QR (v0.8.0)
 

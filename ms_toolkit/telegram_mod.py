@@ -1,11 +1,9 @@
 """
 Telegram guruh moderatsiyasi tool'lari (tg-mod-functions ustiga adapter).
 
-Bu modul kodni nusxalamaydi — ``tg-mod-functions`` paketini ixtiyoriy
-bog'liqlik sifatida ishlatadi, shuning uchun ikki joyda ikki xil versiya
-paydo bo'lmaydi:
-
-    pip install "ms-file-toolkit[telegram]"
+Bu modul kodni nusxalamaydi — ``tg-mod-functions`` paketini ishlatadi
+(``pip install ms-file-toolkit`` uni avtomatik o'rnatadi), shuning uchun
+ikki joyda ikki xil versiya paydo bo'lmaydi.
 
 Farq: ms-file-toolkit tool'lari sinxron va holatsiz, moderatsiya tool'lari
 esa async, ``aiogram.Bot`` obyektini talab qiladi va holatli (warn storage).
@@ -23,7 +21,7 @@ import threading
 
 try:
     from tg_mod_functions import ModerationToolkit, JSONFileWarnStorage
-except ImportError:  # pragma: no cover - ixtiyoriy bog'liqlik
+except ImportError:  # pragma: no cover - faqat buzilgan o'rnatishda
     ModerationToolkit = None
     JSONFileWarnStorage = None
 
@@ -37,7 +35,7 @@ def _require():
     if ModerationToolkit is None:
         raise ImportError(
             "Telegram moderatsiya tool'lari uchun 'tg-mod-functions' kerak: "
-            "pip install \"ms-file-toolkit[telegram]\""
+            "pip install --upgrade tg-mod-functions"
         )
 
 
