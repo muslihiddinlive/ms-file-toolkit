@@ -258,8 +258,13 @@ def _network_available():
         return False
 
 
-_NETWORK_OK = _network_available()
-_SKIP_REASON = "Tarmoq mavjud emas yoki bloklangan"
+# Haqiqiy internetga bog'liq testlar CI'da (GitHub Actions) beqaror bo'lishi
+# mumkin (proxy, rate-limit, tarmoq uzilishi) va release'ni bekorga to'xtatadi.
+# Ular lokal ishga tushganda ishlaydi; CI'da RUN_NETWORK_TESTS=1 bilan yoqiladi.
+import os as _os
+_IN_CI = bool(_os.environ.get("CI")) and not _os.environ.get("RUN_NETWORK_TESTS")
+_NETWORK_OK = (not _IN_CI) and _network_available()
+_SKIP_REASON = "Tarmoq mavjud emas, bloklangan yoki CI'da o'chirilgan (RUN_NETWORK_TESTS=1 bilan yoqing)"
 
 
 @pytest.mark.skipif(not _NETWORK_OK, reason=_SKIP_REASON)
