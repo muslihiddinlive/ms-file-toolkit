@@ -463,6 +463,89 @@ TOOLS = [
             "required": ["file_path", "output_dir"],
         },
     },
+    {
+        "name": "create_pdf_from_images",
+        "description": (
+            "Bir yoki bir nechta rasmdan (JPG/PNG/...) PDF yaratadi — har rasm alohida sahifa, "
+            "berilgan tartibda. Foydalanuvchi rasm(lar)ni PDF qilib bering desa shuni ishlating."
+        ),
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "image_paths": {"type": "array", "items": {"type": "string"}, "description": "Rasm fayllari yo'li, sahifalar tartibida"},
+                "output_path": {"type": "string", "description": "Yaratiladigan .pdf fayl yo'li"},
+                "page_size": {"type": "string", "enum": ["original", "a4"], "description": "'original' — sahifa rasm o'lchamida (default); 'a4' — rasm A4 sahifaga sig'diriladi"},
+                "overwrite": {"type": "boolean", "description": "Fayl mavjud bo'lsa, ustiga yozish (default: false)"},
+            },
+            "required": ["image_paths", "output_path"],
+        },
+    },
+    {
+        "name": "extract_pdf_images",
+        "description": (
+            "PDF ICHIGA joylangan rasmlarni (fotosuratlar, logotiplar, diagrammalar) alohida rasm "
+            "fayllari qilib chiqarib beradi. Sahifaning o'zini rasmga aylantirish uchun bu emas, "
+            "convert_pdf_to_images ishlatiladi."
+        ),
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "file_path": {"type": "string", "description": ".pdf fayl yo'li"},
+                "output_dir": {"type": "string", "description": "Rasmlar saqlanadigan papka"},
+                "min_width": {"type": "integer", "description": "Shundan tor rasmlar o'tkazib yuboriladi (default: 64)"},
+                "min_height": {"type": "integer", "description": "Shundan past rasmlar o'tkazib yuboriladi (default: 64)"},
+                "max_images": {"type": "integer", "description": "Ko'pi bilan nechta rasm chiqarish (default: 200)"},
+            },
+            "required": ["file_path", "output_dir"],
+        },
+    },
+    {
+        "name": "create_qr_code",
+        "description": (
+            "QR kod rasmi (.png yoki .svg) yaratadi. qr_type: text (oddiy matn), url (havola), phone (telefon), "
+            "email, wifi (skanerlansa WiFi'ga ulanadi), sms, vcard (kontakt), telegram (username -> t.me havolasi). "
+            "Asosiy qiymat `data`ga yoziladi (matn/havola/telefon/email/WiFi nomi/kontakt ismi/username)."
+        ),
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "output_path": {"type": "string", "description": "Yaratiladigan .png (yoki .svg) fayl yo'li"},
+                "data": {"type": "string", "description": "Asosiy qiymat: matn, havola, telefon, email manzili, WiFi nomi (SSID), kontakt ismi yoki Telegram username"},
+                "qr_type": {"type": "string", "enum": ["text", "url", "phone", "email", "wifi", "sms", "vcard", "telegram"], "description": "QR turi (default: text)"},
+                "size": {"type": "integer", "description": "Taxminiy rasm o'lchami pikselda (default: 512)"},
+                "error_correction": {"type": "string", "enum": ["l", "m", "q", "h"], "description": "Xatolarni tuzatish darajasi (default: m)"},
+                "subject": {"type": "string", "description": "email: mavzu"},
+                "body": {"type": "string", "description": "email: xat matni"},
+                "password": {"type": "string", "description": "wifi: parol"},
+                "security": {"type": "string", "enum": ["WPA", "WEP", "nopass"], "description": "wifi: himoya turi (default: WPA)"},
+                "hidden": {"type": "boolean", "description": "wifi: yashirin tarmoqmi"},
+                "message": {"type": "string", "description": "sms: xabar matni"},
+                "name": {"type": "string", "description": "vcard: to'liq ism (bo'sh bo'lsa data ishlatiladi)"},
+                "phone": {"type": "string", "description": "vcard: telefon"},
+                "email": {"type": "string", "description": "vcard: email"},
+                "url": {"type": "string", "description": "vcard: veb-sayt"},
+                "org": {"type": "string", "description": "vcard: tashkilot"},
+                "note": {"type": "string", "description": "vcard: izoh"},
+                "overwrite": {"type": "boolean", "description": "Fayl mavjud bo'lsa, ustiga yozish (default: false)"},
+            },
+            "required": ["output_path", "data"],
+        },
+    },
+    {
+        "name": "read_qr_code",
+        "description": (
+            "Rasmdagi QR kod(lar)ni o'qib, ichidagi matnni qaytaradi (internetsiz, lokal). Har topilgan kod uchun "
+            "matn va turi (url/wifi/phone/email/sms/vcard/text) qaytadi."
+        ),
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "image_path": {"type": "string", "description": "QR kod tushirilgan rasm fayli yo'li"},
+                "only_qr": {"type": "boolean", "description": "Faqat QR kodlarni izlash (default: true); false — oddiy shtrix-kodlarni ham o'qiydi"},
+            },
+            "required": ["image_path"],
+        },
+    },
     # ---------- Avtomatik aniqlash ----------
     {
         "name": "read_any_file",

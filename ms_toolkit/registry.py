@@ -23,8 +23,9 @@ from .pptx_tool import read_pptx_text, get_pptx_slide_count, extract_pptx_notes
 from .pptx_writer import (
     create_pptx, add_pptx_slide, add_pptx_image, set_pptx_background_color, add_pptx_chart,
 )
-from .pdf_tool import read_pdf_text, read_pdf_tables, get_pdf_metadata
-from .pdf_writer import create_pdf, merge_pdfs, split_pdf
+from .pdf_tool import read_pdf_text, read_pdf_tables, get_pdf_metadata, extract_pdf_images
+from .pdf_writer import create_pdf, merge_pdfs, split_pdf, create_pdf_from_images
+from .qr_tool import create_qr_code, read_qr_code
 from .legacy_tool import read_legacy_file
 from .auto_tool import read_any_file, get_file_info
 from .csv_tool import read_csv_data, get_csv_summary
@@ -97,6 +98,11 @@ REGISTRY = {
     "create_pdf": create_pdf,
     "merge_pdfs": merge_pdfs,
     "split_pdf": split_pdf,
+    "create_pdf_from_images": create_pdf_from_images,
+    "extract_pdf_images": extract_pdf_images,
+    # QR kod
+    "create_qr_code": create_qr_code,
+    "read_qr_code": read_qr_code,
     # Eski formatlar
     "read_legacy_file": read_legacy_file,
     # Auto-detect
@@ -161,7 +167,7 @@ REGISTRY = {
 # qo'llaniladigan parametr nomlari (scalar yo'llar)
 _PATH_PARAMS = ("file_path", "image_path", "save_as", "output_path", "output_dir", "dir_path")
 # ro'yxat (list) ko'rinishidagi fayl yo'llari (masalan merge_pdfs)
-_PATH_LIST_PARAMS = ("file_paths",)
+_PATH_LIST_PARAMS = ("file_paths", "image_paths")
 
 
 def dispatch(tool_name: str, tool_input: dict, base_dir: str = None) -> dict:
