@@ -14,7 +14,15 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install -e ".[dev,telegram]"
-      - run: pytest tests/ -q
+      - name: Run tests
+        run: |
+          set -o pipefail
+          pytest tests/ -q -x -rfE 2>&1 | tee /tmp/pytest.log
+      - name: Surface test failure
+        if: failure()
+        run: |
+          MSG=$(grep -E "^(FAILED|ERROR)|Error|assert" /tmp/pytest.log | head -8 | tr "\n" " ")
+          echo "::error title=pytest failed::${MSG:0:900}"
 
   build:
     needs: test
