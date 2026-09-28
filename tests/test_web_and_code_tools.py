@@ -310,6 +310,9 @@ def _duckduckgo_reachable():
         return False
 
 
+# DuckDuckGo datacenter IP'larga (GitHub Actions) ko'pincha javob beradi, lekin
+# bo'sh natija qaytaradi (bot-blok) — shuning uchun CI'da o'chirilgan.
+@pytest.mark.skipif(_IN_CI, reason="CI'da DuckDuckGo bo'sh natija qaytaradi (RUN_NETWORK_TESTS=1 bilan yoqing)")
 @pytest.mark.skipif(not _duckduckgo_reachable(), reason="DuckDuckGo domeni bu muhitda ochilmaydi")
 def test_search_web_real():
     result = dispatch("search_web", {"query": "Telegram Bot API changelog", "max_results": 5})
