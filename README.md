@@ -47,6 +47,36 @@ dispatch("convert_xlsx_to_csv", {"file_path": "hisobot.xlsx", "output_dir": "csv
 
 `convert_pptx_to_images` va `convert_pdf_to_images` tashqi system-binary talab qilmaydi (PyMuPDF orqali); `convert_*_to_pdf` funksiyalari LibreOffice orqali ishlaydi.
 
+## Telegram guruh moderatsiyasi (ixtiyoriy)
+
+[`tg-mod-functions`](https://pypi.org/project/tg-mod-functions/) ning 25 ta moderatsiya tool'i
+(ban, mute, warn, promote, join-request, lockdown, reaction va h.k.) fayl tool'lari bilan bir xil
+`dispatch()` orqali ishlaydi:
+
+```bash
+pip install "ms-file-toolkit[telegram]"
+```
+
+```python
+from aiogram import Bot
+from ms_toolkit import TOOLS, dispatch, configure_telegram, telegram_tool_schemas
+
+bot = Bot(token="...")
+configure_telegram(
+    bot,
+    protected_user_ids={123456789},   # AI hech qachon tegolmaydigan akkauntlar
+    warns_path="warns.json",          # ogohlantirishlar restart'dan keyin saqlanadi
+)
+
+all_tools = TOOLS + telegram_tool_schemas()   # Claude'ga beriladigan to'liq ro'yxat
+dispatch("ban_user", {"chat_id": -100123, "user_id": 42, "minutes": 60})
+# -> {"ok": True, "message": "..."}
+```
+
+Guruh yaratuvchisi (creator) va `protected_user_ids` dagi akkauntlar har doim himoyalangan: AI
+adashsa yoki aldansa ham ularga ban/mute/kick/warn/demote qilib bo'lmaydi.
+`configure_telegram()` chaqirilmaguncha bu tool'lar yoqilmaydi va fayl tool'lariga ta'sir qilmaydi.
+
 ## Xavfsizlik
 
 Fayl yo'llari AI tomonidan tanlanadi, shuning uchun **path traversal** himoyasi bor (`ms_toolkit/security.py`) — bu himoya yangi qo'shilgan barcha tool'larga (CSV, OpenDocument, rasm, arxiv, konvertatsiya) avtomatik qo'llaniladi:

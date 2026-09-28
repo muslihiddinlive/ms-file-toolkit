@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ms-file-toolkit"
-version = "0.6.0"
+version = "0.7.0"
 description = "Microsoft, OpenDocument, PDF, CSV, rasm va arxiv fayllarni o'qish/yozish uchun AI function-calling Python toolkit"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -27,6 +27,7 @@ dependencies = [
 
 [project.optional-dependencies]
 ai = ["anthropic>=0.40.0"]
+telegram = ["tg-mod-functions>=0.4.0"]
 dev = ["pytest>=8.0.0"]
 
 [project.scripts]

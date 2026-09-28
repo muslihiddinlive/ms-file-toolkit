@@ -53,6 +53,7 @@ from .web_tool import (
     search_web, get_known_changelog_url,
 )
 from .security import resolve_safe_path, UnsafePathError
+from .telegram_mod import call_telegram_tool, telegram_tool_names
 
 REGISTRY = {
     # DOCX - o'qish
@@ -174,6 +175,11 @@ def dispatch(tool_name: str, tool_input: dict, base_dir: str = None) -> dict:
     Xato bo'lsa exception ko'tarmaydi — {"error": "..."} qaytaradi,
     shunda AI xatoni ko'rib, foydalanuvchiga tushuntira oladi.
     """
+    # Telegram moderatsiya tool'lari (configure_telegram() chaqirilgan bo'lsa).
+    # Ularda fayl yo'li yo'q, shuning uchun path-tekshiruv kerak emas.
+    if tool_name in telegram_tool_names():
+        return call_telegram_tool(tool_name, **tool_input)
+
     func = REGISTRY.get(tool_name)
     if func is None:
         return {"error": f"Noma'lum tool: {tool_name}"}
